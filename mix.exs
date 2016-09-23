@@ -24,7 +24,6 @@ defmodule KafkaEx.Mixfile do
       {:dialyze, "~> 0.2", only: :dev},
       {:ex_doc, "~> 0.12.0", only: :dev},
       {:credo, "~> 0.4.5", only: :dev},
-      {:fast_tls, github: "processone/fast_tls"},
       {:snappy,
        git: "https://github.com/fdmanana/snappy-erlang-nif",
        only: [:dev, :test]}
