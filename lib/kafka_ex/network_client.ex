@@ -7,8 +7,8 @@ defmodule KafkaEx.NetworkClient do
   def create_socket(host, port) do
     case :gen_tcp.connect(format_host(host), port, [:binary, {:packet, 4}]) do
       {:ok, socket} ->
-        Logger.log(:debug, "Succesfully connected to broker #{inspect(host)}:#{inspect port}")
-        socket
+        Logger.log(:info, "Succesfully connected to broker #{inspect(host)}:#{inspect port}")
+        eventually_upgrade_to_ssl(socket)
       _             ->
         Logger.log(:error, "Could not connect to broker #{inspect(host)}:#{inspect port}")
         nil
@@ -56,5 +56,12 @@ defmodule KafkaEx.NetworkClient do
       [match_data] = [[_, _, _, _, _]] -> match_data |> tl |> List.flatten |> Enum.map(&String.to_integer/1) |> List.to_tuple
       _ -> to_char_list(host)
     end
+  end
+
+  def eventually_upgrade_to_ssl(socket) do
+    :ssl.start()
+    {ok, ssl_socket} = :ssl.connect(socket, [{:cacert, System.get_env("CACERT")}, {:certfile, System.get_env("CERTFILE")}, {:keyfile, System.get_env("CAKEY")}], :infinity)
+    raise ssl_socket.inspect
+    ssl_socket
   end
 end
