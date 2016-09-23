@@ -61,7 +61,6 @@ defmodule KafkaEx.NetworkClient do
   def eventually_upgrade_to_ssl(socket) do
     :ssl.start()
     {ok, ssl_socket} = :ssl.connect(socket, [{:cacert, System.get_env("CACERT")}, {:certfile, System.get_env("CERTFILE")}, {:keyfile, System.get_env("CAKEY")}], :infinity)
-    raise ssl_socket.inspect
     ssl_socket
   end
 end
